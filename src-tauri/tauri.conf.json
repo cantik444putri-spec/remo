@@ -1,0 +1,48 @@
+{
+  "productName": "Remotion Studio Tools Microstock",
+  "version": "0.1.0",
+  "identifier": "dev.remotionstudiotools.microstock",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Remotion Studio Tools Microstock",
+        "label": "main",
+        "width": 1280,
+        "height": 820,
+        "minWidth": 960,
+        "minHeight": 600,
+        "decorations": false,
+        "transparent": false,
+        "resizable": true,
+        "center": true,
+        "fullscreen": false,
+        "visible": true,
+        "theme": "Dark"
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self' ipc: http://ipc.localhost; img-src 'self' asset: http://asset.localhost data: blob: https:; media-src 'self' asset: http://asset.localhost data: blob: https:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src ipc: http://ipc.localhost https://api.openai.com https://api.mistral.ai https://openrouter.ai"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis", "msi"],
+    "category": "Video",
+    "shortDescription": "AI-assisted Remotion studio for microstock creators.",
+    "longDescription": "Remotion Studio Tools Microstock is a Windows desktop app that pairs a multi-provider AI assistant (OpenAI, Mistral, OpenRouter, or a custom OpenAI-compatible endpoint) with a Remotion-powered video studio that renders 4K UHD footage at 30fps by default, tailored for microstock creators.",
+    "copyright": "Copyright (c) 2026 Remotion Studio Tools Microstock",
+    "icon": ["icons/icon.png", "icons/icon.ico"],
+    "windows": {
+      "nsis": {
+        "installMode": "perMachine",
+        "languages": ["English", "Indonesian"]
+      }
+    }
+  }
+}

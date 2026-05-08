@@ -1,0 +1,25 @@
+[package]
+name = "remotion-studio-tools-microstock"
+version = "0.1.0"
+description = "Desktop app for microstock creators: multi-provider AI assistant + Remotion 4K/30fps video studio."
+authors = ["Remotion Studio Tools Microstock"]
+edition = "2021"
+rust-version = "1.77"
+
+[lib]
+name = "remotion_studio_tools_microstock_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-shell = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[features]
+# this feature is used for production builds or when `devPath` points to the filesystem
+# DO NOT REMOVE!!
+custom-protocol = ["tauri/custom-protocol"]
