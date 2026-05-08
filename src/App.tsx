@@ -10,6 +10,8 @@ import { MicrostockPage } from "./app/routes/MicrostockPage";
 import { ProvidersPage } from "./app/routes/ProvidersPage";
 import { RendersPage } from "./app/routes/RendersPage";
 import { SettingsPage } from "./app/routes/SettingsPage";
+import { useEffect } from "react";
+import { toast } from "sonner";
 import { useTheme } from "./hooks/useTheme";
 import {
   defaultShortcutCombos,
@@ -17,6 +19,10 @@ import {
 } from "./hooks/useKeyboardShortcuts";
 import { useUIStore } from "./stores/ui";
 import { useSettingsStore } from "./stores/settings";
+import { useProviderStore } from "./stores/providers";
+import { useChatStore } from "./stores/chat";
+import { hasSecret } from "./lib/keystore";
+import { PROVIDER_ORDER } from "./lib/providers";
 
 export function App() {
   const location = useLocation();
@@ -25,6 +31,25 @@ export function App() {
 
   // Apply theme/accent to <html>
   useTheme();
+
+  // On boot, reconcile which providers have a saved API key so the UI can
+  // show the green dot immediately without waiting for the Providers page.
+  const setHasKey = useProviderStore((s) => s.setHasKey);
+  const configs = useProviderStore((s) => s.configs);
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      for (const id of PROVIDER_ORDER) {
+        const alias = configs[id].apiKeyAlias;
+        const present = await hasSecret(alias);
+        if (cancelled) return;
+        setHasKey(id, present);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [configs, setHasKey]);
 
   // Global shortcuts
   useKeyboardShortcuts([
@@ -47,6 +72,17 @@ export function App() {
       handler: () => {
         window.history.pushState({}, "", "/settings");
         window.dispatchEvent(new PopStateEvent("popstate"));
+      },
+    },
+    {
+      id: "newChat",
+      keys: "Ctrl+N",
+      combo: defaultShortcutCombos.newChat,
+      handler: () => {
+        window.history.pushState({}, "", "/chat");
+        window.dispatchEvent(new PopStateEvent("popstate"));
+        useChatStore.getState().clear();
+        toast("New chat");
       },
     },
   ]);
