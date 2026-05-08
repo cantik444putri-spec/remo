@@ -63,6 +63,11 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* OLED theme: kill ambient glow so black stays pure */
+html.oled body {
+  background: var(--color-bg);
+}
+
 /* draggable title bar region */
 [data-tauri-drag-region] {
   -webkit-app-region: drag;
