@@ -82,8 +82,8 @@ export function App() {
       handler: () => {
         window.history.pushState({}, "", "/chat");
         window.dispatchEvent(new PopStateEvent("popstate"));
-        useChatStore.getState().clear();
-        toast("New chat");
+        useChatStore.getState().newConversation();
+        toast("New conversation");
       },
     },
   ]);

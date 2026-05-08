@@ -141,3 +141,98 @@ html.oled body {
     border-radius: 4px;
   }
 }
+
+
+/* ---------------------------------------------------------------------- */
+/* Markdown + code block syntax highlighting (hljs tokens)                 */
+/* ---------------------------------------------------------------------- */
+
+.prose {
+  color: var(--color-foreground);
+  line-height: 1.65;
+}
+.prose p { margin: 0.5em 0; }
+.prose p:first-child { margin-top: 0; }
+.prose p:last-child { margin-bottom: 0; }
+.prose ul, .prose ol { margin: 0.5em 0; padding-left: 1.25rem; }
+.prose ul { list-style: disc; }
+.prose ol { list-style: decimal; }
+.prose li { margin: 0.2em 0; }
+.prose a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.prose strong { color: var(--color-foreground); font-weight: 600; }
+.prose em { color: var(--color-foreground); font-style: italic; }
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+  font-weight: 600;
+  color: var(--color-foreground);
+  margin: 0.9em 0 0.4em;
+  line-height: 1.25;
+}
+.prose h1 { font-size: 1.25rem; }
+.prose h2 { font-size: 1.1rem; }
+.prose h3 { font-size: 1rem; }
+.prose blockquote {
+  border-left: 3px solid var(--color-accent);
+  padding-left: 0.75rem;
+  color: var(--color-muted);
+  margin: 0.5em 0;
+}
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.6em 0;
+  font-size: 0.85em;
+}
+.prose th, .prose td {
+  border: 1px solid var(--color-border);
+  padding: 0.35rem 0.55rem;
+  text-align: left;
+}
+.prose th {
+  background: var(--color-surface);
+  font-weight: 600;
+}
+.prose hr {
+  border: 0;
+  border-top: 1px solid var(--color-border);
+  margin: 1em 0;
+}
+.prose :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--color-bg);
+  padding: 0.08rem 0.32rem;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  color: hsl(310 80% 80%);
+}
+
+.prose pre {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  line-height: 1.55;
+  background: hsl(240 10% 3% / 0.7);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.9rem 1rem;
+  overflow-x: auto;
+  margin: 0.5em 0;
+}
+.prose pre code { background: transparent; padding: 0; border: 0; color: var(--color-foreground); }
+
+/* highlight.js tokens — hand-tuned dark theme matched to the accent palette */
+.hljs-comment, .hljs-quote { color: hsl(240 5% 50%); font-style: italic; }
+.hljs-keyword, .hljs-selector-tag, .hljs-literal, .hljs-type { color: hsl(310 90% 75%); }
+.hljs-string, .hljs-regexp, .hljs-addition { color: hsl(150 65% 70%); }
+.hljs-number, .hljs-built_in, .hljs-symbol, .hljs-attr { color: hsl(35 90% 70%); }
+.hljs-function, .hljs-title, .hljs-section, .hljs-name { color: hsl(200 90% 75%); }
+.hljs-params, .hljs-variable { color: hsl(0 0% 92%); }
+.hljs-attribute, .hljs-tag .hljs-attr { color: hsl(45 90% 75%); }
+.hljs-class .hljs-title, .hljs-class { color: hsl(270 90% 80%); }
+.hljs-deletion { color: hsl(0 80% 70%); }
+.hljs-meta { color: hsl(190 60% 60%); }
+.hljs-emphasis { font-style: italic; }
+.hljs-strong { font-weight: 600; }
