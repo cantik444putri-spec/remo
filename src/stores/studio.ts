@@ -17,6 +17,8 @@ export interface StudioState {
   setTitle: (partial: Partial<MainCompositionProps["title"]>) => void;
   setLowerThird: (partial: Partial<MainCompositionProps["lowerThird"]>) => void;
   setOutro: (partial: Partial<MainCompositionProps["outro"]>) => void;
+  setHud: (partial: Partial<MainCompositionProps["hud"]>) => void;
+  setParticles: (partial: Partial<MainCompositionProps["particles"]>) => void;
   setPreset: (id: string) => void;
   setLastScrubFrame: (frame: number) => void;
   setSafeArea: (v: StudioState["safeArea"]) => void;
@@ -54,12 +56,24 @@ export const useStudioStore = create<StudioState>()(
             outro: { ...s.composition.outro, ...partial },
           },
         })),
+      setHud: (partial) =>
+        set((s) => ({
+          composition: {
+            ...s.composition,
+            hud: { ...s.composition.hud, ...partial },
+          },
+        })),
+      setParticles: (partial) =>
+        set((s) => ({
+          composition: {
+            ...s.composition,
+            particles: { ...s.composition.particles, ...partial },
+          },
+        })),
       setPreset: (id) => {
         const preset = getPreset(id);
         set((s) => ({
           presetId: preset.id,
-          // Toggling to an alpha-capable preset turns the background off;
-          // the user can override in the Inspector.
           composition: preset.supportsAlpha
             ? { ...s.composition, transparentBackground: true }
             : { ...s.composition, transparentBackground: false },
@@ -77,13 +91,21 @@ export const useStudioStore = create<StudioState>()(
     }),
     {
       name: "rstm:studio",
-      version: 1,
-      // Don't persist the scrub frame (it's transient UI).
+      version: 2,
       partialize: (s) => ({
         composition: s.composition,
         presetId: s.presetId,
         safeArea: s.safeArea,
       }),
+      // v1 -> v2: merge any missing fields (HUD, particles, transition)
+      // with the current defaults so older persisted state still renders.
+      migrate: (state) => {
+        const s = state as Partial<StudioState>;
+        return {
+          ...s,
+          composition: { ...mainDefaults, ...(s.composition ?? {}) },
+        } as StudioState;
+      },
     },
   ),
 );

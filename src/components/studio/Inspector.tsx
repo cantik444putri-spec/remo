@@ -1,5 +1,14 @@
 import { useMemo } from "react";
-import { AlignLeft, Image as ImageIcon, Layers, SlidersHorizontal, Type, UserRound } from "lucide-react";
+import {
+  AlignLeft,
+  Image as ImageIcon,
+  Layers,
+  Radar,
+  SlidersHorizontal,
+  Sparkles,
+  Type,
+  UserRound,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
@@ -27,6 +36,8 @@ export function Inspector() {
   const setTitle = useStudioStore((s) => s.setTitle);
   const setLowerThird = useStudioStore((s) => s.setLowerThird);
   const setOutro = useStudioStore((s) => s.setOutro);
+  const setHud = useStudioStore((s) => s.setHud);
+  const setParticles = useStudioStore((s) => s.setParticles);
   const presetId = useStudioStore((s) => s.presetId);
   const safeArea = useStudioStore((s) => s.safeArea);
   const setSafeArea = useStudioStore((s) => s.setSafeArea);
@@ -136,6 +147,7 @@ export function Inspector() {
               setComposition({ outroDuration: v[0] ?? mainFallback })
             }
           />
+        {/* Transition duration row at end of Timing section */}
           <div className="text-[10px] text-[var(--color-muted)]">
             Total:{" "}
             <span className="font-mono text-[var(--color-foreground)]">
@@ -147,6 +159,20 @@ export function Inspector() {
               )
             </span>
           </div>
+          <Row label={`Transition ${framesToSec(composition.transitionDuration, preset.fps)}`}>
+            <span className="font-mono text-[10px] text-[var(--color-muted)]">
+              {composition.transitionDuration}f
+            </span>
+          </Row>
+          <Slider
+            value={[composition.transitionDuration]}
+            min={6}
+            max={90}
+            step={3}
+            onValueChange={(v) =>
+              setComposition({ transitionDuration: v[0] ?? 30 })
+            }
+          />
         </Section>
 
         {/* Title card */}
@@ -210,6 +236,49 @@ export function Inspector() {
             label="Call to action"
             value={composition.outro.callToAction}
             onChange={(v) => setOutro({ callToAction: v })}
+          />
+        </Section>
+
+        {/* HUD overlay */}
+        <Section icon={<Radar className="size-3.5" />} title="HUD overlay">
+          <Row label="Enabled">
+            <Switch
+              checked={composition.showHud}
+              onCheckedChange={(v) => setComposition({ showHud: v })}
+            />
+          </Row>
+          <LabeledInput
+            label="Label"
+            value={composition.hud.label}
+            onChange={(v) => setHud({ label: v })}
+          />
+          <Row label="Accent">
+            <input
+              type="color"
+              value={composition.hud.accentColor ?? "#a855f7"}
+              onChange={(e) => setHud({ accentColor: e.target.value })}
+              className="h-7 w-14 cursor-pointer rounded border border-[var(--color-border)] bg-transparent p-0"
+            />
+          </Row>
+        </Section>
+
+        {/* Particle backdrop */}
+        <Section icon={<Sparkles className="size-3.5" />} title="Particle backdrop">
+          <Row label="Enabled">
+            <Switch
+              checked={composition.showParticles}
+              onCheckedChange={(v) => setComposition({ showParticles: v })}
+            />
+          </Row>
+          <Row label={`Count ${composition.particles.count ?? 180}`}>
+            <span className="font-mono text-[10px] text-[var(--color-muted)]" />
+          </Row>
+          <Slider
+            value={[composition.particles.count ?? 180]}
+            min={40}
+            max={600}
+            step={10}
+            onValueChange={(v) => setParticles({ count: v[0] ?? 180 })}
           />
         </Section>
 

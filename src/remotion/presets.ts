@@ -42,9 +42,23 @@ export interface RenderPreset {
 
 export const RENDER_PRESETS: RenderPreset[] = [
   {
+    id: "uhd-60-h264-premium",
+    label: "4K UHD · 60fps · H.264 · premium",
+    description:
+      "Recommended for smooth motion with motion-blur. MP4, CRF 15.",
+    width: 3840,
+    height: 2160,
+    fps: 60,
+    codec: "h264",
+    extension: "mp4",
+    supportsAlpha: false,
+    crf: 15,
+    recommended: true,
+  },
+  {
     id: "uhd-30-h264",
     label: "4K UHD · 30fps · H.264",
-    description: "Default. MP4, broadly compatible, small file size.",
+    description: "Default 30fps. MP4, broadly compatible, small file size.",
     width: 3840,
     height: 2160,
     fps: 30,
@@ -52,7 +66,6 @@ export const RENDER_PRESETS: RenderPreset[] = [
     extension: "mp4",
     supportsAlpha: false,
     crf: 18,
-    recommended: true,
   },
   {
     id: "uhd-30-prores4444",
@@ -64,6 +77,31 @@ export const RENDER_PRESETS: RenderPreset[] = [
     fps: 30,
     codec: "prores",
     proresProfile: "4444",
+    extension: "mov",
+    supportsAlpha: true,
+  },
+  {
+    id: "uhd-60-prores4444xq",
+    label: "4K UHD · 60fps · ProRes 4444 XQ .mov (alpha)",
+    description:
+      "Archive-grade master with alpha at 60fps. Huge file, highest quality.",
+    width: 3840,
+    height: 2160,
+    fps: 60,
+    codec: "prores",
+    proresProfile: "4444-xq",
+    extension: "mov",
+    supportsAlpha: true,
+  },
+  {
+    id: "uhd-30-png-sequence",
+    label: "4K UHD · 30fps · PNG sequence (alpha)",
+    description:
+      "Frame-by-frame PNGs with alpha for compositing in NLEs.",
+    width: 3840,
+    height: 2160,
+    fps: 30,
+    codec: "png-sequence",
     extension: "mov",
     supportsAlpha: true,
   },
@@ -140,7 +178,7 @@ export const RENDER_PRESETS: RenderPreset[] = [
   },
 ];
 
-export const DEFAULT_PRESET_ID = "uhd-30-h264";
+export const DEFAULT_PRESET_ID = "uhd-60-h264-premium";
 
 export function getPreset(id: string): RenderPreset {
   return (

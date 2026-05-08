@@ -1,5 +1,16 @@
-import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
+import {
+  AbsoluteFill,
+  interpolate,
+  useCurrentFrame,
+  useVideoConfig,
+} from "remotion";
+import { loadFont } from "@remotion/google-fonts/Inter";
 import { theme } from "../theme";
+import { cinematicSpring } from "../animations";
+
+const { fontFamily } = loadFont("normal", {
+  weights: ["500", "700"],
+});
 
 export interface LowerThirdProps {
   name: string;
@@ -14,7 +25,7 @@ export const lowerThirdDefaults: LowerThirdProps = {
 };
 
 /**
- * A lower-third banner that slides in from the side. Composable as a
+ * A lower-third banner that springs in from the side. Composable as a
  * <Sequence> over any other scene via the main composition.
  */
 export const LowerThird: React.FC<LowerThirdProps> = ({
@@ -25,12 +36,7 @@ export const LowerThird: React.FC<LowerThirdProps> = ({
   const frame = useCurrentFrame();
   const { fps, width, height } = useVideoConfig();
 
-  const entry = spring({
-    frame,
-    fps,
-    config: { damping: 22, mass: 0.5, stiffness: 130 },
-  });
-
+  const entry = cinematicSpring({ frame, fps });
   const side = position === "left" ? "flex-start" : "flex-end";
   const translateX =
     position === "left"
@@ -48,6 +54,7 @@ export const LowerThird: React.FC<LowerThirdProps> = ({
         justifyContent: side,
         padding: width * 0.05,
         paddingBottom: height * 0.12,
+        fontFamily,
       }}
     >
       <div
@@ -57,13 +64,12 @@ export const LowerThird: React.FC<LowerThirdProps> = ({
           display: "flex",
           flexDirection: "column",
           gap: 8,
-          padding: `${height / 2160 * 28}px ${width / 3840 * 40}px`,
+          padding: `${(height / 2160) * 28}px ${(width / 3840) * 40}px`,
           borderRadius: 20,
           background: "rgba(10, 10, 16, 0.75)",
           backdropFilter: "blur(18px)",
           border: `1px solid ${theme.border}`,
           boxShadow: "0 30px 60px -20px rgba(0,0,0,0.6)",
-          fontFamily: theme.fontSans,
           color: theme.fg,
         }}
       >
