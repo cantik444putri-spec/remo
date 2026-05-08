@@ -27,6 +27,8 @@ export interface SettingsState {
   sidebarCollapsed: boolean;
   remotionEligibleFree: boolean;
   remotionCompanyLicenseKey: string | null;
+  /** True once the user has completed the onboarding wizard. */
+  onboarded: boolean;
 
   setTheme: (mode: ThemeMode) => void;
   toggleTheme: () => void;
@@ -35,6 +37,7 @@ export interface SettingsState {
   setSidebarCollapsed: (collapsed: boolean) => void;
   setRemotionEligibleFree: (v: boolean) => void;
   setRemotionCompanyLicenseKey: (v: string | null) => void;
+  setOnboarded: (v: boolean) => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -45,6 +48,7 @@ export const useSettingsStore = create<SettingsState>()(
       sidebarCollapsed: false,
       remotionEligibleFree: true,
       remotionCompanyLicenseKey: null,
+      onboarded: false,
 
       setTheme: (mode) => set({ theme: mode }),
       toggleTheme: () =>
@@ -57,6 +61,7 @@ export const useSettingsStore = create<SettingsState>()(
         set({ remotionEligibleFree }),
       setRemotionCompanyLicenseKey: (remotionCompanyLicenseKey) =>
         set({ remotionCompanyLicenseKey }),
+      setOnboarded: (onboarded) => set({ onboarded }),
     }),
     {
       name: "rstm:settings",

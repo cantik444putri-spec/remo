@@ -3,6 +3,7 @@ import { AnimatePresence } from "framer-motion";
 import { TitleBar } from "./app/layout/TitleBar";
 import { Sidebar } from "./app/layout/Sidebar";
 import { CommandPalette } from "./app/layout/CommandPalette";
+import { Onboarding } from "./app/layout/Onboarding";
 import { Toaster } from "./components/ui/toaster";
 import { ChatPage } from "./app/routes/ChatPage";
 import { StudioPage } from "./app/routes/StudioPage";
@@ -115,6 +116,7 @@ export function App() {
         </main>
       </div>
       <CommandPalette />
+      <Onboarding />
       <Toaster />
     </div>
   );

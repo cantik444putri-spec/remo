@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import {
   Card,
   CardContent,
@@ -6,6 +8,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { PageShell } from "./_PageShell";
 import {
   ACCENT_PRESETS,
@@ -13,13 +17,19 @@ import {
   useSettingsStore,
 } from "@/stores/settings";
 import { cn } from "@/lib/utils";
+import {
+  detectBackend,
+  type KeystoreBackend,
+} from "@/lib/keystore";
+import { RotateCcw, ShieldAlert, ShieldCheck } from "lucide-react";
 
 const SHORTCUTS: Array<{ keys: string; label: string }> = [
   { keys: "Ctrl + K", label: "Open command palette" },
   { keys: "Ctrl + B", label: "Toggle sidebar" },
   { keys: "Ctrl + ,", label: "Open Settings" },
-  { keys: "Ctrl + N", label: "New chat (M5)" },
-  { keys: "Ctrl + R", label: "Render current project (M8)" },
+  { keys: "Ctrl + N", label: "New chat" },
+  { keys: "Enter", label: "Send message (Shift+Enter = newline)" },
+  { keys: "Ctrl + R", label: "Render project (M8)" },
   { keys: "Space", label: "Play / pause preview (M6)" },
 ];
 
@@ -28,6 +38,7 @@ export function SettingsPage() {
   const toggleTheme = useSettingsStore((s) => s.toggleTheme);
   const accent = useSettingsStore((s) => s.accent);
   const setAccent = useSettingsStore((s) => s.setAccent);
+  const setOnboarded = useSettingsStore((s) => s.setOnboarded);
   const remotionEligibleFree = useSettingsStore((s) => s.remotionEligibleFree);
   const setRemotionEligibleFree = useSettingsStore(
     (s) => s.setRemotionEligibleFree,
@@ -37,11 +48,17 @@ export function SettingsPage() {
     (s) => s.setRemotionCompanyLicenseKey,
   );
 
+  const [backend, setBackend] = useState<KeystoreBackend | null>(null);
+  useEffect(() => {
+    detectBackend().then(setBackend);
+  }, []);
+  const secure = backend === "windows-credential-manager";
+
   return (
     <PageShell
       title="Settings"
-      description="Appearance, keyboard, and Remotion license configuration."
-      badge="M2 · live"
+      description="Appearance, keyboard, security, and Remotion license configuration."
+      badge="M4 · live"
     >
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {/* Appearance */}
@@ -118,6 +135,68 @@ export function SettingsPage() {
           </CardContent>
         </Card>
 
+        {/* Security */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>Security</CardTitle>
+            <CardDescription>
+              Where your API keys actually live.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-3 pt-2">
+            <div
+              className={cn(
+                "flex items-start gap-3 rounded-[var(--radius-md)] border p-3 text-xs",
+                secure
+                  ? "border-emerald-500/30 bg-emerald-500/5 text-emerald-200"
+                  : "border-amber-500/30 bg-amber-500/5 text-amber-200",
+              )}
+            >
+              {secure ? (
+                <ShieldCheck className="mt-0.5 size-4 shrink-0" />
+              ) : (
+                <ShieldAlert className="mt-0.5 size-4 shrink-0" />
+              )}
+              <div>
+                <div className="font-semibold text-[var(--color-foreground)]">
+                  {secure
+                    ? "Windows Credential Manager"
+                    : backend === "localstorage-fallback"
+                      ? "localStorage fallback"
+                      : "Detecting..."}
+                </div>
+                <div className="text-[var(--color-muted)]">
+                  {secure
+                    ? "API keys are stored by the OS under service Remotion Studio Tools Microstock. The renderer never sees the secret once saved."
+                    : backend === "localstorage-fallback"
+                      ? "You're running outside Tauri. Keys are kept in browser localStorage for development only. Run npm run tauri:dev for the secure backend."
+                      : ""}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)]/40 px-3 py-2">
+              <div>
+                <div className="text-sm font-medium">Onboarding</div>
+                <div className="text-xs text-[var(--color-muted)]">
+                  Replay the first-run guided tour.
+                </div>
+              </div>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => {
+                  setOnboarded(false);
+                  toast("Onboarding restarted");
+                }}
+              >
+                <RotateCcw className="size-3.5" />
+                Restart
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Remotion license */}
         <Card className="lg:col-span-2">
           <CardHeader>
@@ -152,12 +231,13 @@ export function SettingsPage() {
               <label className="text-xs text-[var(--color-muted)]">
                 Company License Key (optional)
               </label>
-              <input
+              <Input
                 type="text"
                 value={companyKey ?? ""}
                 onChange={(e) => setCompanyKey(e.target.value || null)}
                 placeholder="paste your company license key"
-                className="h-9 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)]/60 px-3 font-mono text-xs outline-none placeholder:text-[var(--color-muted)]/60 focus:border-[var(--color-accent)]"
+                spellCheck={false}
+                className="font-mono text-xs"
               />
             </div>
           </CardContent>
