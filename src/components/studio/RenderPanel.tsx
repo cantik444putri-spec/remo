@@ -144,7 +144,11 @@ export function RenderPanel() {
             <Download className="size-3.5" />
             Render
           </Button>
-          <Button variant="secondary" size="sm" onClick={() => toast("AI storyboard: M7", { duration: 1400 })}>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => useStudioStore.getState().setStoryboardPanelOpen(true)}
+          >
             <Sparkles className="size-3.5" />
             Generate with AI
           </Button>
