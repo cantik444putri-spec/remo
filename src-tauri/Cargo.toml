@@ -18,6 +18,13 @@ tauri = { version = "2", features = [] }
 tauri-plugin-shell = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+thiserror = "1"
+
+# Cross-platform credential store (2.x line; stable default features).
+# - Windows: Credential Manager (wincred) — the primary target.
+# - macOS:   Keychain Services.
+# - Linux:   Secret Service (requires gnome-keyring/kwallet running).
+keyring = "2"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem

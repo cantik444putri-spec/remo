@@ -78,6 +78,7 @@ export function CommandPalette() {
   const toggleTheme = useSettingsStore((s) => s.toggleTheme);
   const toggleSidebar = useSettingsStore((s) => s.toggleSidebar);
   const setAccent = useSettingsStore((s) => s.setAccent);
+  const setOnboarded = useSettingsStore((s) => s.setOnboarded);
   const navigate = useNavigate();
 
   // Close palette when the user navigates via keyboard
@@ -240,6 +241,18 @@ export function CommandPalette() {
                         <kbd className="ml-auto rounded border border-[var(--color-border)] bg-[var(--color-surface)]/80 px-1.5 py-0.5 font-mono text-[10px] text-[var(--color-muted)]">
                           Ctrl+B
                         </kbd>
+                      </Command.Item>
+                      <Command.Item
+                        value="restart onboarding tour first run"
+                        onSelect={() => {
+                          setOnboarded(false);
+                          setOpen(false);
+                          toast("Onboarding restarted");
+                        }}
+                        className="flex cursor-pointer items-center gap-3 rounded-[var(--radius-md)] px-3 py-2 text-sm text-[var(--color-foreground)] data-[selected=true]:bg-[var(--color-surface-hover)]"
+                      >
+                        <Sparkles className="size-4 text-[var(--color-muted)]" />
+                        <span>Restart onboarding</span>
                       </Command.Item>
                     </Command.Group>
                   </Command.List>
