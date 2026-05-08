@@ -1,40 +1,46 @@
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { PageShell } from "./_PageShell";
+import { motion } from "framer-motion";
+import { PlayerShell } from "@/components/studio/PlayerShell";
+import { Inspector } from "@/components/studio/Inspector";
+import { RenderPanel } from "@/components/studio/RenderPanel";
 
+/**
+ * 3-panel Studio layout:
+ *
+ *   [ RenderPanel 260 ] [ Player canvas (flex) ] [ Inspector 320 ]
+ *
+ * The center canvas always occupies the remaining width, and scales the
+ * <Player /> via 100% w/h with aspect-ratio handled by the preset.
+ */
 export function StudioPage() {
   return (
-    <PageShell
-      title="Studio"
-      description="Remotion-powered video studio. Live preview at 4K · 30fps by default."
-      badge="M6 · coming soon"
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="flex h-full min-h-0"
     >
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[260px_1fr_320px]">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm">Scenes</CardTitle>
-            <CardDescription>
-              Scene list + AI prompt panel will live here.
-            </CardDescription>
-          </CardHeader>
-        </Card>
-        <Card className="min-h-[360px]">
-          <CardHeader>
-            <CardTitle className="text-sm">Live Preview</CardTitle>
-            <CardDescription>
-              &lt;Player /&gt; from @remotion/player will mount here. Default
-              composition: 3840 × 2160 @ 30fps.
-            </CardDescription>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm">Inspector</CardTitle>
-            <CardDescription>
-              Props editor, transitions, and render preset controls.
-            </CardDescription>
-          </CardHeader>
-        </Card>
-      </div>
-    </PageShell>
+      <RenderPanel />
+      <section className="flex min-w-0 flex-1 flex-col">
+        <header className="flex items-center justify-between border-b border-[var(--color-border)] bg-[var(--color-bg)]/50 px-4 py-2 backdrop-blur-xl">
+          <div className="text-xs font-medium">
+            <span className="gradient-text">Studio</span>
+            <span className="ml-2 text-[var(--color-muted)]">
+              Live preview · Remotion Player
+            </span>
+          </div>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-2 py-0.5 text-[10px] font-medium text-[var(--color-muted)]">
+            <span className="size-1.5 rounded-full bg-[var(--color-accent)] shadow-[0_0_6px_var(--color-accent)]" />
+            M6 · live preview
+          </span>
+        </header>
+        <div className="min-h-0 flex-1 p-4">
+          <div className="h-full w-full overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] shadow-[var(--shadow-glow)]">
+            <PlayerShell />
+          </div>
+        </div>
+      </section>
+      <Inspector />
+    </motion.div>
   );
 }
