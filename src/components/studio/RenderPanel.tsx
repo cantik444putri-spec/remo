@@ -1,17 +1,19 @@
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 import { ChevronDown, Download, FileVideo, Info, Play, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useStudioStore } from "@/stores/studio";
 import { useSettingsStore } from "@/stores/settings";
 import { RENDER_PRESETS, getPreset } from "@/remotion/presets";
+import { startRender } from "@/lib/renderService";
 
 /**
- * Left-panel render controls: preset picker + Render button. The actual
- * render pipeline (spawning the Remotion CLI from Rust) lands in M8;
- * until then, the button explains what will happen and queues a stub.
+ * Left-panel render controls: preset picker + Render button. The Render
+ * button enqueues a real render job through the Rust pipeline (M8) and
+ * navigates the user to the /renders page with a live progress view.
  */
 export function RenderPanel() {
   const presetId = useStudioStore((s) => s.presetId);
@@ -21,6 +23,8 @@ export function RenderPanel() {
   const companyKey = useSettingsStore((s) => s.remotionCompanyLicenseKey);
 
   const [expanded, setExpanded] = useState(false);
+  const [launching, setLaunching] = useState(false);
+  const navigate = useNavigate();
   const preset = useMemo(() => getPreset(presetId), [presetId]);
 
   const licenseLabel = eligibleFree
@@ -30,11 +34,27 @@ export function RenderPanel() {
       : "UNSET";
   const licenseWarn = !eligibleFree && !companyKey;
 
-  const onRender = () => {
-    toast.info("Render pipeline lands in M8", {
-      description: `${preset.label} · ${composition.titleDuration + composition.outroDuration}f @ ${preset.fps}fps · ${preset.extension}`,
-      duration: 3200,
-    });
+  const onRender = async () => {
+    if (licenseWarn || launching) return;
+    setLaunching(true);
+    try {
+      const projectName =
+        composition.title.title?.trim() || "Remotion Studio";
+      await startRender({ projectName });
+      toast.success("Render queued", {
+        description: `${preset.label} · ${composition.titleDuration + composition.outroDuration}f @ ${preset.fps}fps`,
+        action: {
+          label: "View",
+          onClick: () => navigate("/renders"),
+        },
+      });
+      navigate("/renders");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Render failed to start";
+      toast.error("Render could not start", { description: msg });
+    } finally {
+      setLaunching(false);
+    }
   };
 
   return (
@@ -140,9 +160,9 @@ export function RenderPanel() {
         </div>
 
         <div className="mt-auto flex flex-col gap-2">
-          <Button onClick={onRender} size="sm" disabled={licenseWarn}>
+          <Button onClick={onRender} size="sm" disabled={licenseWarn || launching}>
             <Download className="size-3.5" />
-            Render
+            {launching ? "Starting…" : "Render"}
           </Button>
           <Button
             variant="secondary"

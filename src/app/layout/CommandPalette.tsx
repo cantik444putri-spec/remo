@@ -279,7 +279,7 @@ export function CommandPalette() {
                     <div className="flex items-center gap-2">
                       <span className="gradient-text font-semibold">RSTM</span>
                       <span>·</span>
-                      <span>M2 · Shell UX</span>
+                      <span>M8 · Render pipeline</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <kbd className="rounded border border-[var(--color-border)] bg-[var(--color-surface)]/80 px-1.5 py-0.5 font-mono">

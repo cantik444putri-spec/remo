@@ -123,8 +123,8 @@ remo/
 - **M4** ✅ Secure keystore (Windows Credential Manager) + onboarding
 - **M5** ✅ Multi-conversation chat + persistence + markdown + parameters
 - **M6** ✅ Remotion composition + live preview + premium animation stack
-- M7 — AI → storyboard → props live-edit
-- M8 — Render pipeline (Rust spawn CLI, progress events)
+- **M7** ✅ AI → storyboard → props live-edit
+- **M8** ✅ Render pipeline (Rust spawn CLI, progress events)
 - M9 — Microstock toolkit (idea generator, metadata, batch variants)
 - M10 — Packaging + installer + auto-updater
 - M11 — Polish
