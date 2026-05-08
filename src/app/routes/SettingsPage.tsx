@@ -31,8 +31,8 @@ const SHORTCUTS: Array<{ keys: string; label: string }> = [
   { keys: "Enter", label: "Send message (Shift+Enter = newline)" },
   { keys: "Esc", label: "Cancel message edit" },
   { keys: "Double-click", label: "Rename conversation in list" },
-  { keys: "Ctrl + R", label: "Render project (M8)" },
-  { keys: "Space", label: "Play / pause preview (M6)" },
+  { keys: "Ctrl + R", label: "Render project" },
+  { keys: "Space", label: "Play / pause preview" },
 ];
 
 export function SettingsPage() {
@@ -60,7 +60,7 @@ export function SettingsPage() {
     <PageShell
       title="Settings"
       description="Appearance, keyboard, security, and Remotion license configuration."
-      badge="M5 · live"
+      badge="M8 · live"
     >
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {/* Appearance */}

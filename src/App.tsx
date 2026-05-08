@@ -24,6 +24,12 @@ import { useProviderStore } from "./stores/providers";
 import { useChatStore } from "./stores/chat";
 import { hasSecret } from "./lib/keystore";
 import { PROVIDER_ORDER } from "./lib/providers";
+import { useStudioStore } from "./stores/studio";
+import {
+  ensureRenderSubscriptions,
+  refreshRenderList,
+  startRender,
+} from "./lib/renderService";
 
 export function App() {
   const location = useLocation();
@@ -51,6 +57,13 @@ export function App() {
       cancelled = true;
     };
   }, [configs, setHasKey]);
+
+  // Wire Rust render events once on boot and rehydrate the queue from
+  // whatever the backend already knows (survives UI reloads).
+  useEffect(() => {
+    void ensureRenderSubscriptions();
+    void refreshRenderList();
+  }, []);
 
   // Global shortcuts
   useKeyboardShortcuts([
@@ -84,6 +97,33 @@ export function App() {
         window.dispatchEvent(new PopStateEvent("popstate"));
         useChatStore.getState().newConversation();
         toast("New conversation");
+      },
+    },
+    {
+      id: "renderProject",
+      keys: "Ctrl+R",
+      combo: defaultShortcutCombos.renderProject,
+      handler: () => {
+        const licenseOk =
+          useSettingsStore.getState().remotionEligibleFree ||
+          !!useSettingsStore.getState().remotionCompanyLicenseKey;
+        if (!licenseOk) {
+          toast.error("Remotion license not set", {
+            description: "Open Settings to enable Free eligibility or paste a key.",
+          });
+          return;
+        }
+        const composition = useStudioStore.getState().composition;
+        const projectName = composition.title.title?.trim() || "Remotion Studio";
+        startRender({ projectName })
+          .then(() => {
+            window.history.pushState({}, "", "/renders");
+            window.dispatchEvent(new PopStateEvent("popstate"));
+          })
+          .catch((err: unknown) => {
+            const msg = err instanceof Error ? err.message : "Render failed to start";
+            toast.error("Render could not start", { description: msg });
+          });
       },
     },
   ]);

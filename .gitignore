@@ -40,3 +40,6 @@ src-tauri/gen/schemas/
 
 # OS
 Thumbs.db
+
+# Render outputs from `npm run remotion:render`
+out/

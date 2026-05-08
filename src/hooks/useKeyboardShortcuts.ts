@@ -21,6 +21,8 @@ export const defaultShortcutCombos = {
   openSettings: (e: KeyboardEvent) => isMod(e) && e.key === ",",
   toggleSidebar: (e: KeyboardEvent) =>
     isMod(e) && (e.key === "b" || e.key === "B"),
+  renderProject: (e: KeyboardEvent) =>
+    isMod(e) && !e.shiftKey && (e.key === "r" || e.key === "R"),
 } as const;
 
 /**

@@ -149,9 +149,9 @@ export function Sidebar() {
               className="glass rounded-[var(--radius-md)] p-3 text-xs text-[var(--color-muted)]"
             >
               <div className="mb-1 font-medium text-[var(--color-foreground)]">
-                v0.1.0 · M2
+                v0.1.0 · M8
               </div>
-              Shell UX · Command Palette · Theming
+              Render pipeline · AI storyboard · Studio
             </motion.div>
           )}
         </AnimatePresence>
